@@ -1,45 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from './Components/SearchBar';
 import TaskList from './Components/TaskList';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
+  
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  const updateTasks = (newTasks) => {
+    setTasks(newTasks);
+    localStorage.setItem('tasks', JSON.stringify(newTasks));
+  };
 
   const addTask = (newTask) => {
-    setTasks([...tasks, newTask]);
+    const newTasks = [...tasks, { text: newTask, completed: false }];
+    updateTasks(newTasks);
   };
- 
+
   const deleteTask = (index) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
-    setTasks(updatedTasks);
+    const newTasks = [...tasks];
+    newTasks.splice(index, 1);
+    updateTasks(newTasks);
   };
 
-  const handleTaskComplete = (index) => {
-    if (completedTasks.includes(index)) {
-      const updatedCompletedTasks = completedTasks.filter((item) => item !== index);
-      setCompletedTasks(updatedCompletedTasks);
-    } else {
-      setCompletedTasks([...completedTasks, index]);
-    }
+  const toggleTask = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
+    updateTasks(newTasks);
   };
 
-  const remainingTasks = tasks.length - completedTasks.length;
+  const remainingTasks = tasks.filter(task => !task.completed).length;
 
   return (
     <div className="App">
       <h1>Lista de Tareas</h1>
       <SearchBar onAddTask={addTask} />
-      <TaskList
-        tasks={tasks}
-        completedTasks={completedTasks}
-        onDeleteTask={deleteTask}
-        onTaskComplete={handleTaskComplete}
-      />
-      <p>Tareas restantes: {remainingTasks}</p>
+      <TaskList tasks={tasks} onDeleteTask={deleteTask} onToggleTask={toggleTask} />
+      <div>
+        <p>Tareas restantes: {remainingTasks}</p>
+      </div>
     </div>
-    
   );
 }
 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 function TaskList(props) {
@@ -15,9 +14,13 @@ function TaskList(props) {
             onChange={() => handleTaskCheckbox(index)}
           />
           <span
-            style={{ textDecoration: props.completedTasks.includes(index) ? 'line-through' : 'none' }}
+            style={{
+              textDecoration: Array.isArray(props.completedTasks) && props.completedTasks.includes(index)
+                ? 'line-through'
+                : 'none',
+            }}
           >
-            {task}
+            {task.text} {/* Accede a la propiedad 'text' del objeto 'task' */}
           </span>
           <button onClick={() => props.onDeleteTask(index)}>Eliminar</button>
         </li>
