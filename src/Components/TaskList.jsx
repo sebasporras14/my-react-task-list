@@ -13,15 +13,16 @@ function TaskList(props) {
             type="checkbox"
             onChange={() => handleTaskCheckbox(index)}
           />
-          <span
-            style={{
-              textDecoration: Array.isArray(props.completedTasks) && props.completedTasks.includes(index)
-                ? 'line-through'
-                : 'none',
-            }}
-          >
-            {task.text} {/* Accede a la propiedad 'text' del objeto 'task' */}
-          </span>
+          <div>
+            <strong>
+              {task.name} {/* Muestra el nombre de la tarea */}
+            </strong>
+          </div>
+          <div>
+            {task.description && (
+              <p>{task.description}</p> /* Muestra la descripción si está presente */
+            )}
+          </div>
           <button onClick={() => props.onDeleteTask(index)}>Eliminar</button>
         </li>
       ))}
